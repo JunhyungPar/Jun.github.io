@@ -81,11 +81,12 @@
                 endDate,
                 endTime,
                 name
-            }).then(() => {
-                document.getElementById('message').textContent = "예약이 완료되었습니다!";
+            }) .then(() => {
+                alert("예약에 성공했습니다!");
                 document.getElementById('reservationForm').reset();
-            }).catch((error) => {
-                document.getElementById('message').textContent = "예약에 실패했습니다: " + error.message;
+            })
+            .catch((error) => {
+                alert("예약에 실패했습니다: " + error.message);
             });
         });
     </script>
