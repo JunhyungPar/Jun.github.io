@@ -24,38 +24,19 @@
                 <option value="오른쪽튜브">오른쪽튜브</option>
                 <option value="라만">라만</option>
                 <option value="포미아XRD">포미아XRD</option>
-                <option value="PBM1">PBM1</option>
-                <option value="PBM2">PBM2</option>
-                <option value="PBM3">PBM3</option>
             </select>
 
             <label for="startDate">시작 날짜</label>
             <input type="date" id="startDate" name="startDate" required>
 
             <label for="startTime">시작 시간</label>
-            <select id="startTime" name="startTime" required>
-                <option value="">선택하세요</option>
-                <script>
-                    for (let i = 0; i < 24; i++) {
-                        let hour = i < 10 ? '0' + i : i;
-                        document.write(`<option value="${hour}">${hour}시</option>`);
-                    }
-                </script>
-            </select>
+            <input type="time" id="startTime" name="startTime" required>
 
             <label for="endDate">종료 날짜</label>
             <input type="date" id="endDate" name="endDate" required>
 
             <label for="endTime">종료 시간</label>
-            <select id="endTime" name="endTime" required>
-                <option value="">선택하세요</option>
-                <script>
-                    for (let i = 0; i < 24; i++) {
-                        let hour = i < 10 ? '0' + i : i;
-                        document.write(`<option value="${hour}">${hour}시</option>`);
-                    }
-                </script>
-            </select>
+            <input type="time" id="endTime" name="endTime" required>
 
             <label for="name">이름</label>
             <input type="text" id="name" name="name" required>
@@ -65,30 +46,48 @@
         <p id="message"></p>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
     <script>
-       document.getElementById('reservationForm').addEventListener('submit', function (e) {
-  e.preventDefault();
+        // Firebase 초기화 (Firebase 설정 정보 붙여넣기)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkum45wp1pgAEtKoRMrS-OXXsUu3guPpA",
+            authDomain: "amee-reservation.firebaseapp.com",
+            projectId: "amee-reservation",
+            storageBucket: "amee-reservation.firebasestorage.app",
+            messagingSenderId: "477607482884",
+            appId: "1:477607482884:web:09f1c72d9ab8681c0b8751"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-  const formData = new FormData(this);
+        // 예약 데이터 저장
+        document.getElementById('reservationForm').addEventListener('submit', function (e) {
+            e.preventDefault();
 
-  fetch('https://script.google.com/macros/s/AKfycbwQIhBSb9FK1E2d9k-_GbpxU0zmj9YU2LsugRUC_ZEY2ZR3JQBDbno7Yp177O85Z2_Cbw/exec', {
-    method: 'POST',
-    body: formData,
-    mode: 'cors', // CORS 설정
-  })
-    .then(response => response.text())
-    .then(data => {
-      console.log(data);
-      document.getElementById('message').textContent = data; // 예약 완료 메시지
-    })
-    .catch(error => {
-      console.error(error);
-      alert('예약 요청에 실패했습니다.');
-    });
-});
+            const equipment = document.getElementById('equipment').value;
+            const startDate = document.getElementById('startDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endDate = document.getElementById('endDate').value;
+            const endTime = document.getElementById('endTime').value;
+            const name = document.getElementById('name').value;
 
-      </script>
-      
+            // Firebase에 데이터 저장
+            firebase.database().ref('reservations').push({
+                equipment,
+                startDate,
+                startTime,
+                endDate,
+                endTime,
+                name
+            }).then(() => {
+                document.getElementById('message').textContent = "예약이 완료되었습니다!";
+                document.getElementById('reservationForm').reset();
+            }).catch((error) => {
+                document.getElementById('message').textContent = "예약에 실패했습니다: " + error.message;
+            });
+        });
+    </script>
 </body>
 </html>
-
