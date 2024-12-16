@@ -1,1 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장비 예약</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; }
+        label { display: block; margin-top: 10px; }
+        select, input, button { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>장비 예약</h1>
+        <form id="reservationForm">
+            <label for="equipment">장비 선택</label>
+            <select id="equipment" name="equipment" required>
+                <option value="왼쪽튜브">왼쪽튜브</option>
+                <option value="오른쪽튜브">오른쪽튜브</option>
+                <option value="라만">라만</option>
+                <option value="포미아XRD">포미아XRD</option>
+                <option value="PBM1">PBM1</option>
+                <option value="PBM2">PBM2</option>
+                <option value="PBM3">PBM3</option>
+            </select>
+
+            <label for="startDate">시작 날짜</label>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <label for="startTime">시작 시간</label>
+            <select id="startTime" name="startTime" required>
+                <option value="">선택하세요</option>
+                <script>
+                    for (let i = 0; i < 24; i++) {
+                        let hour = i < 10 ? '0' + i : i;
+                        document.write(`<option value="${hour}">${hour}시</option>`);
+                    }
+                </script>
+            </select>
+
+            <label for="endDate">종료 날짜</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <label for="endTime">종료 시간</label>
+            <select id="endTime" name="endTime" required>
+                <option value="">선택하세요</option>
+                <script>
+                    for (let i = 0; i < 24; i++) {
+                        let hour = i < 10 ? '0' + i : i;
+                        document.write(`<option value="${hour}">${hour}시</option>`);
+                    }
+                </script>
+            </select>
+
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required>
+
+            <button type="submit">예약하기</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+       document.getElementById('reservationForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+
+  fetch('https://script.google.com/macros/s/AKfycbwQIhBSb9FK1E2d9k-_GbpxU0zmj9YU2LsugRUC_ZEY2ZR3JQBDbno7Yp177O85Z2_Cbw/exec', {
+    method: 'POST',
+    body: formData,
+    mode: 'cors', // CORS 설정
+  })
+    .then(response => response.text())
+    .then(data => {
+      console.log(data);
+      document.getElementById('message').textContent = data; // 예약 완료 메시지
+    })
+    .catch(error => {
+      console.error(error);
+      alert('예약 요청에 실패했습니다.');
+    });
+});
+
+      </script>
+      
+</body>
+</html>
 
